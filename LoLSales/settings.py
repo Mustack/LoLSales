@@ -1,5 +1,5 @@
 # Django settings for LoLSales project.
-
+import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -8,6 +8,7 @@ BASE_DIR = os.path.join( os.path.dirname( __file__ ), '..' )
 ADMINS = (
 	# ('Your Name', 'your_email@example.com'),
 	('Jean-Luc Martin', 'mail@jlmart.in'),
+	('Sam Wilson', 'tecywiz121@hotmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -125,7 +126,7 @@ INSTALLED_APPS = (
 	'gunicorn',
 	'kombu.transport.django',
 	'djcelery',
-	'app',
+#	'app',
 	'django_extensions',
 	'south',
 	# Uncomment the next line to enable admin documentation:
@@ -162,6 +163,12 @@ LOGGING = {
 }
 
 BROKER_BACKEND = 'django'
+
+# Load local configuration options (like db username/password)
+try:
+	from .local_settings import *
+except ImportError:
+	pass
 
 import djcelery
 djcelery.setup_loader()
