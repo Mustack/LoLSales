@@ -8,7 +8,11 @@
         <title>{% block title %}{% endblock title %} | LoLSales</title>
     </head>
     <body>
+        <header>
+            <img src="{{ STATIC_ROOT }}/images/header.png"/>
+        </header>
+
         {% block content %}
-	{% endblock content %}
+	   {% endblock content %}
     </body>
 </html>
