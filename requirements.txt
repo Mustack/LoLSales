@@ -16,3 +16,5 @@ psycopg2==2.4.5
 python-dateutil==1.5
 pytz==2012f
 wsgiref==0.1.2
+requests==1.1.0
+djrill==0.3.0

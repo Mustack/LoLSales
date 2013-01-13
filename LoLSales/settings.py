@@ -131,6 +131,7 @@ INSTALLED_APPS = (
 	'django_extensions',
 	'south',
 	'registration',
+	'djrill',
 	# Uncomment the next line to enable admin documentation:
 	# 'django.contrib.admindocs',
 )
@@ -139,6 +140,11 @@ INSTALLED_APPS = (
 
 ACCOUNT_ACTIVATION_DAYS = 2
 
+# Djrill Settings
+
+MANDRILL_API_KEY = '9f15b814-82f1-4456-b843-b6339cda2df2'
+EMAIL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
+DEFAULT_FROM_EMAIL = 'webmaster@lolsales.example.com'
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
