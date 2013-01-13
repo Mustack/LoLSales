@@ -128,12 +128,14 @@ INSTALLED_APPS = (
 	'gunicorn',
 	'kombu.transport.django',
 	'djcelery',
-#	'app',
 	'django_extensions',
 	'south',
 	'registration',
 	'djrill',
 	'crispy_forms',
+	'champions',
+	'accounts',
+	'pages',
 	# Uncomment the next line to enable admin documentation:
 	# 'django.contrib.admindocs',
 )
