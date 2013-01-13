@@ -4,4 +4,6 @@
 local_settings.py
 venv
 
+.DS_Store
+
 celerybeat-schedule
