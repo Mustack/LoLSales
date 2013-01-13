@@ -18,3 +18,4 @@ pytz==2012f
 wsgiref==0.1.2
 requests==1.1.0
 djrill==0.3.0
+django-crispy-forms==1.2.3
