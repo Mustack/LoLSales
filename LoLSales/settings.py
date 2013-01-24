@@ -128,6 +128,7 @@ INSTALLED_APPS = (
 	'gunicorn',
 	'kombu.transport.django',
 	'djcelery',
+	'less',
 	'django_extensions',
 	'south',
 	'registration',
