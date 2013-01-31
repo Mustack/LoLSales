@@ -19,6 +19,7 @@
 		{% endblock style %}
 	</head>
 	<body>
+		{% if user.is_authenticated %}
 		<div class="navbar navbar-static-top navbar-inverse">
 			<div class="navbar-inner">
 				<div class="container">
@@ -27,10 +28,12 @@
 					</a>
 					<ul class="nav">
 						<li><a href="#">Test</a></li>
+						<li><a href="{% url auth_logout %}">Logout</a>
 					</ul>
 				</div>
 			</div>
 		</div>
+		{% endif %}
 		<header>
 			<img src="{% static 'images/header.png' %}"/>
 		</header>
