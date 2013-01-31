@@ -14,3 +14,13 @@ body {
 	background-image: -o-linear-gradient(top, rgba(47, 26, 0, 0), #150c00), url(../images/bg.png);
 	background-image: linear-gradient(to bottom, rgba(47, 26, 0, 0), #150c00), url(../images/bg.png);
 }
+
+.content {
+	background: #FFF;
+	-webkit-border-radius: 10px;
+	   -moz-border-radius: 10px;
+	        border-radius: 10px;
+
+	padding-top: 2.5em;
+	padding-bottom:2.5em;
+}
