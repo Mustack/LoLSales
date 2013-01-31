@@ -3,7 +3,7 @@ body {
 	background-image:url(../images/bg.png);
 }
 
-.navbar-inner {
+.navbar-inverse .navbar-inner {
 	border-color: #000;
 
 
