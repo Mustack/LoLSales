@@ -5,5 +5,5 @@ from champions.models import Champion
 
 
 class Subscription(models.Model):
-    user = models.ForeignKey(User)
-    group = models.ForeignKey(Champion)
+    user = models.ForeignKey(User, related_name='subcriptions')
+    champions = models.ForeignKey(Champion)
