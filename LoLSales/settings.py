@@ -83,6 +83,7 @@ STATICFILES_FINDERS = (
 	'django.contrib.staticfiles.finders.FileSystemFinder',
 	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+	'less.finders.LessFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -155,6 +156,9 @@ DEFAULT_FROM_EMAIL = 'webmaster@lolsales.example.com'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap'
 CRISPY_FAIL_SILENTLY = not DEBUG
+
+#LESS settings
+LESS_ROOT = os.path.join(BASE_DIR, 'LoLSales', 'static')
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
