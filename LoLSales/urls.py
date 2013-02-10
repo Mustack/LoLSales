@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from djrill import DjrillAdminSite
 
-from champions import views
+from champions.views import ChampionView
 
 admin.site = DjrillAdminSite()
 
@@ -21,5 +21,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^accounts/', include('accounts.urls')),
-    url(r'^champion/', 'champions.views.get_champion'),
+    url(r'^champion/', ChampionView.as_view()),
 )
