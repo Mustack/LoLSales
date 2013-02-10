@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 import urllib2
 import urlparse
 from bs4 import BeautifulSoup
+from champions.models import Champion
 
 class LeagueScraper(object):
     def __init__(self):
@@ -44,7 +45,23 @@ class LeagueScraper(object):
 
             yield info
 
-#print list(lol.champions('http://na.leagueoflegends.com/champions'))
+
+CHAMPION_URL = 'http://na.leagueoflegends.com/champions'
+
 
 class Command(BaseCommand):
-    pass
+    help = 'Scrape champions and update the database'
+
+    def __init__(self):
+        self.scraper = LeagueScraper()
+
+    def handle(self, *args, **options):
+        for champion in self.scraper.champions(CHAMPION_URL):
+            (obj, created) = Champion.objects.get_or_create(name=champion['name'],
+                                defaults={'title': champion['title'],
+                                            'detail_url': champion['detail_url'],
+                                            'icon_url': champion['icon_url'],
+                                            'image_url': champion['image_url'],
+                                            'short_description': champion['short_description'],
+                                            'description': champion['description']})
+            obj.save()
