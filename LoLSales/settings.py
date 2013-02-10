@@ -107,6 +107,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'LoLSales.urls'
 
+LOGIN_REDIRECT_URL = '/accounts/subscriptions'
+
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'LoLSales.wsgi.application'
 
