@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from .. import Champion
+from champions.models import Champion
 # Create your models here.
 
 class Subscription(models.Model):
