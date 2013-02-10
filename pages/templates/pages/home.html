@@ -1,0 +1,68 @@
+{% extends "base_search.html" %}
+{% load staticfiles %}
+{% load less %}
+
+{% block style %}
+{% endblock style %}
+
+{% block title %}
+	Home
+{% endblock title%}
+
+{% block content %} {{block.super}}
+	<section class="home-content">
+		<h1>Welcome to LoL Sales!</h1>
+
+		<div class="site-blurb">
+			<p class="description">
+				This is a blurb about LoL Sales! Here is a quick explanation of what the site is and what you can do with it. I'm not sure how long this is going to be, but I'm going to keep on writing stuff just to occupy this space. That way, it'll give us a better idea of what this page would look like when we actually have some content. Yup.
+			</p>
+		</div>
+		<hr>
+		<div class="dynamic-home">
+
+			<h3>This week...</h3>
+
+			<div class="champion-column">
+				
+				<h5>Champions</h5>
+
+				<div class="champion-list">
+
+					<!-- Modular champions of the week thing goes here; started below, but iterate rather than listing them all. -->
+
+					<article class="weekly-champion">
+						<img class="champ-picture" src="{% static 'images/thumb-Ahri.jpg' %}"/>
+						<span class="champion-name"> Ahri </span>
+						<span class="champion-price"> A bazillion dollars. </span>
+					</article>
+
+					<article class="weekly-champion">
+
+						<img class="champ-picture" src="{% static 'images/thumb-Akali.jpg' %}"/>
+						<span class="champion-name"> AKali </span>
+						<span class="champion-price"> Two bazillion dollars. </span>
+					</article>
+
+				</div>
+
+			</div>
+			<div class="skin-column">
+				
+				<h5>Skins</h5>
+
+				<div class="skin-list">
+
+					<!-- Modular skins of the week thing goes here. -->
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="page-footer">
+			This is going to be the page footer. You know, links and small print and stuff?
+		</div>
+
+	</section>
+{% endblock content %}

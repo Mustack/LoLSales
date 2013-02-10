@@ -12,3 +12,5 @@ venv*
 celerybeat-schedule
 
 /static/
+
+LoLSales/static/LESS_CACHE

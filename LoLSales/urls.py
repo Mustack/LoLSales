@@ -21,4 +21,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^champion/', 'champions.views.get_champion'),
+    url(r'^home/', 'pages.views.home'),
 )
