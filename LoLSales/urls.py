@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/', include('accounts.urls')),
     url(r'^champion/', 'champions.views.get_champion'),
 )
