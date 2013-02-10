@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 
 class SubscriptionView(TemplateView):
 
-    template_name = 'templates/subscriptions/subscription.html'
+    template_name = 'subscriptions/subscription.html'
 
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
