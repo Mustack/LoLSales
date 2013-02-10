@@ -5,7 +5,7 @@
 *~
 
 local_settings.py
-venv
+venv*
 
 .DS_Store
 
