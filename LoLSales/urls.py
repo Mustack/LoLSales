@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from djrill import DjrillAdminSite
 
-from champions import views
+from champions.views import ChampionView
 
 admin.site = DjrillAdminSite()
 
@@ -19,7 +19,8 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/', include('registration.backends.default.urls')),
-    url(r'^champion/', 'champions.views.get_champion'),
+    url(r'^accounts/', include('accounts.urls')),
+    url(r'^champion/', ChampionView.as_view()),
     url(r'^home/', 'pages.views.home'),
+    url(r'^accounts/', include('accounts.urls')),
 )
