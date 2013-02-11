@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from model_utils.managers import InheritanceManager
 
 class Product(models.Model):
+	objects = InheritanceManager()
+
 	subscribers = models.ManyToManyField(User, through='accounts.Subscription', related_name='products')
 
 # Create your models here.
