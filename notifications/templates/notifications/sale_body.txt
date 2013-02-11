@@ -1,0 +1,10 @@
+Hey there {{ user.username }},
+
+You would probably like to know that {% if subscriptions|length == 1 %}one{% else %}some{% endif %} of the characters or skins you seleted to be notified about {% if subscriptions|length == 1 %}has{% else %}have{% endif %} gone on sale!
+
+What's on sale:
+{% for sub in subscriptions %}
+    * {{ sub.product.name }} - {{ sub.product.price }} RP (Until {{ sub.product.sale_end }}){% endfor %}
+
+Enjoy,
+LoLSales

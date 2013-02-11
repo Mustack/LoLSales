@@ -140,6 +140,7 @@ INSTALLED_APPS = (
 	'champions',
 	'accounts',
 	'pages',
+	'notifications',
 	# Uncomment the next line to enable admin documentation:
 	# 'django.contrib.admindocs',
 )
