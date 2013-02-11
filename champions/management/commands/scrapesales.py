@@ -55,13 +55,14 @@ class SaleFinder(object):
                 price_regex_result = self.price_regex.search(li)
                 if price_regex_result.group(1):
                     sale['price'] = price_regex_result.group(1)
+                    sale['url'] = url
                     sales.append(sale)
 
         return sales
 
 
 class Command(BaseCommand):
-    help = 'Scrape champions and update the database'
+    help = 'Scrape sales and update the database.'
 
     def handle(self, *args, **options):
         skins = [x.name for x in Skin.objects.all()]
@@ -72,10 +73,14 @@ class Command(BaseCommand):
 
         s = SaleFinder(skins, champions)
         articles = s.get_articles('http://na.leagueoflegends.com/taxonomy/term/22/all/feed')
-        url = articles[1][2]
 
-        sales = s.extract_sales(url)
+        urls = [articles[i][2] for i in range(len(articles))]
+        print "URLs:\n" + "\n".join(urls)
+
+        sales = []
+        for url in urls:
+            sales.extend(s.extract_sales(url))
 
         print "Sales:"
         for sale in sales:
-            print sale['type'] + ": " + sale['item'] + " for " + sale['price'] + " RP."
+            print "{:>9}: {:<30} for {:>4} RP \t {}".format(sale['type'], sale['item'], sale['price'], sale['url'])
