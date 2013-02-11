@@ -8,6 +8,10 @@ class Product(models.Model):
 	subscribers = models.ManyToManyField(User, through='accounts.Subscription', related_name='products')
 	name = models.CharField(max_length=255)
 
+	def classname(self):
+		'''Returns the name of this class for use in templates'''
+		return self.__class__.__name__
+
 	@property
 	def active_sale_items(self):
 		today = date.today()
