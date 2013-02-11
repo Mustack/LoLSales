@@ -13,14 +13,17 @@ class Product(models.Model):
 			return self._set_determiner()
 
 	def _set_determiner(self):
-		if self.champion:
+		try:
+			child = self.champion
 			self.determiner = 1
-			return self.champion
+			return child
+		except Champion.DoesNotExist:
+			pass
 		# TODO: set determiner for skins
 
 	def save(self, *args, **kwargs):
 		self._set_determiner()
-		return super(Product, self).save(*args, **args)
+		return super(Product, self).save(*args, **kwargs)
 
 # Create your models here.
 class Champion(Product):
