@@ -4,7 +4,7 @@ import feedparser
 import urllib2
 import re
 from django.core.management.base import BaseCommand
-from champions.models import Champion
+from champions.models import Champion, Skin
 from bs4 import BeautifulSoup
 
 
@@ -37,6 +37,8 @@ class SaleFinder(object):
         for li in list_items:
             sale = {}
 
+            # TODO: The order of the skin names is not consistent, so we have to do champion first
+
             # look for skin names
             for skin in self.skins:
                 if skin in li:
@@ -67,12 +69,8 @@ class Command(BaseCommand):
     help = 'Scrape champions and update the database'
 
     def handle(self, *args, **options):
-        skins = [
-            'Veigar Greybeard',
-            'Ironscale Shyvana',
-            'Gangster Twitch',
-            'Blah Skin'
-        ]
+        skins = [x.name for x in Skin.objects.all()]
+        print len(skins), 'known skins'
 
         champions = [x.name for x in Champion.objects.all()]
         print "Champions:", champions
