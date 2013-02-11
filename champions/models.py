@@ -19,7 +19,15 @@ class Product(models.Model):
 			return child
 		except Champion.DoesNotExist:
 			pass
-		# TODO: set determiner for skins
+
+		try:
+			child = self.skin
+			self.determiner = 2
+			return child
+		except Skin.DoesNotExist:
+			pass
+
+		return None # No product attached? Probably an error...
 
 	def save(self, *args, **kwargs):
 		self._set_determiner()
@@ -36,3 +44,7 @@ class Champion(Product):
 	image_url = models.URLField(max_length=1024)
 	short_description = models.TextField()
 	description = models.TextField()
+
+class Skin(Product):
+	name = models.CharField(max_length=255)
+	champion = models.ForeignKey(Champion)
