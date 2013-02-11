@@ -9,13 +9,15 @@
 
 		<title>{% block title %}{% endblock title %} | LoLSales</title>
 
-		 <!-- Bootstrap -->
-		 <link href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+		<!-- Bootstrap -->
+		<link href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
 
-		 <!-- Bootstrap Toggle Buttons -->
-		 <link href="{% static 'lib/bootstrap-toggle-buttons/css/bootstrap-toggle-buttons.css' %}" media="screen">
-		{% block style %}
+		<!-- Bootstrap Toggle Buttons -->
+		<link href="{% static 'lib/bootstrap-toggle-buttons/css/bootstrap-toggle-buttons.css' %}" media="screen">
+
+		<!-- Site Specific CSS -->
 		<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+		{% block style %}
 		{% endblock style %}
 	</head>
 	<body>
