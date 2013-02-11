@@ -4,14 +4,13 @@ from model_utils.managers import InheritanceManager
 
 class Product(models.Model):
 	objects = InheritanceManager()
-
 	subscribers = models.ManyToManyField(User, through='accounts.Subscription', related_name='products')
+	name = models.CharField(max_length=255)
 
 # Create your models here.
 class Champion(Product):
 	product = models.OneToOneField(Product, parent_link=True)
 
-	name = models.CharField(max_length=255, unique=True)
 	title = models.CharField(max_length=255)
 	detail_url = models.URLField(max_length=1024)
 	icon_url = models.URLField(max_length=1024)
@@ -24,7 +23,6 @@ class Champion(Product):
 
 class Skin(Product):
 	product = models.OneToOneField(Product, parent_link=True, db_column='product_ptr_id')
-	name = models.CharField(max_length=255)
 	champion = models.ForeignKey(Champion)
 
 	def __unicode__(self):
