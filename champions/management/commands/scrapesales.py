@@ -37,29 +37,24 @@ class SaleFinder(object):
         for li in list_items:
             sale = {}
 
-            # TODO: The order of the skin names is not consistent, so we have to do champion first
-
-            # look for skin names
-            for skin in self.skins:
-                if skin in li:
-                    sale['item'] = skin
-                    sale['type'] = "skin"
-                    print "Skin name found: " + skin
-
-            # if no skin name, look for champion names
-            if 'item' not in sale:
-                for champion in self.champions:
-                    if champion in li:
+            # look for champion names
+            for champion in self.champions:
+                if champion in li:
+                    # see if it's a skin sale, not a champion sale.
+                    for skin in self.skins:
+                        if skin.replace(champion, '').strip() in li:
+                            sale['item'] = skin
+                            sale['type'] = "skin"
+                    # if no skin name was found, it is a champion sale
+                    if 'item' not in sale:
                         sale['item'] = champion
                         sale['type'] = "champion"
-                        print "Champion name found: " + champion
 
-            # if eith skin or champion, look for price
+            # if either skin or champion, look for price
             if 'item' in sale:
                 price_regex_result = self.price_regex.search(li)
                 if price_regex_result.group(1):
                     sale['price'] = price_regex_result.group(1)
-                    print "\tPrice found: " + sale['price']
                     sales.append(sale)
 
         return sales
@@ -73,7 +68,7 @@ class Command(BaseCommand):
         print len(skins), 'known skins'
 
         champions = [x.name for x in Champion.objects.all()]
-        print "Champions:", champions
+        print len(champions), 'known champions'
 
         s = SaleFinder(skins, champions)
         articles = s.get_articles('http://na.leagueoflegends.com/taxonomy/term/22/all/feed')
@@ -81,4 +76,6 @@ class Command(BaseCommand):
 
         sales = s.extract_sales(url)
 
-        print "Sales:", sales
+        print "Sales:"
+        for sale in sales:
+            print sale['type'] + ": " + sale['item'] + " for " + sale['price'] + " RP."
