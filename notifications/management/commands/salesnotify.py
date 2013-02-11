@@ -1,5 +1,6 @@
 from django.db.models.query import EmptyQuerySet
 from django.core.management.base import BaseCommand, CommandError
+from notifications.models import Notification
 from champions.models import Sale
 from accounts.models import Subscription
 from datetime import date
@@ -51,4 +52,12 @@ class Command(BaseCommand):
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
             msg.attach_alternative(html_content, 'text/html')
 
-            msg.send()
+            msg.send() # Will raise exceptions on failure
+
+            # Mark all active sales for this product as notified
+            for sub in subs:
+                for sale in sub.product.active_sales.all():
+                    notified = Notification()
+                    notified.sale = sale
+                    notified.subscription = sub
+                    notified.save()
