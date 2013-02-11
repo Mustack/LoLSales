@@ -45,6 +45,12 @@ class Champion(Product):
 	short_description = models.TextField()
 	description = models.TextField()
 
+	def __unicode__(self):
+		return self.name
+
 class Skin(Product):
 	name = models.CharField(max_length=255)
 	champion = models.ForeignKey(Champion)
+
+	def __unicode__(self):
+		return self.name
