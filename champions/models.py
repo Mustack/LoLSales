@@ -1,11 +1,47 @@
 from django.db import models
 from django.contrib.auth.models import User
 from model_utils.managers import InheritanceManager
+from datetime import date
 
 class Product(models.Model):
 	objects = InheritanceManager()
 	subscribers = models.ManyToManyField(User, through='accounts.Subscription', related_name='products')
 	name = models.CharField(max_length=255)
+
+	@property
+	def active_sale_items(self):
+		today = date.today()
+		return self.sale_items.filter(sale__start__lte=today, sale__end__gte=today).order_by('-price').all()
+
+	@property
+	def active_sales(self):
+		today = date.today()
+		return self.sales.filter(start__lte=today, end__gte=today).all()
+
+	@property
+	def price(self):
+		'''Returns the best price from active sales'''
+		items = self.active_sale_items
+		if len(items) > 0:
+			return items[0].price
+		return None
+
+	@property
+	def sale_start(self):
+		'''Returns the start time of the best sale'''
+		items = self.active_sale_items
+		if len(items) > 0:
+			return items[0].sale.start
+		return None
+
+	@property
+	def sale_end(self):
+		'''Returns the end time of the best sale'''
+		items = self.active_sale_items
+		if len(items) > 0:
+			return items[0].sale.end
+		return None
+
 
 # Create your models here.
 class Champion(Product):
