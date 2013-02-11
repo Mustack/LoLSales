@@ -57,6 +57,11 @@ class Skin(Product):
 
 class Sale(models.Model):
 	name = models.CharField(max_length=255)
-	products = models.ManyToManyField(Product, related_name='sales')
+	products = models.ManyToManyField(Product, related_name='sales', through='SaleItem')
 	start = models.DateField()
 	end = models.DateField()
+
+class SaleItem(models.Model):
+	sale = models.ForeignKey(Sale, related_name='sale_items')
+	product = models.ForeignKey(Product, related_name='sale_items')
+	price = models.DecimalField(max_digits=12, decimal_places=2)
