@@ -17,6 +17,6 @@ class SubscriptionView(TemplateView):
 
         user = self.request.user
 
-        context['champions'] = user.champions
+        context['subscriptions'] = user.subscriptions
 
         return context
