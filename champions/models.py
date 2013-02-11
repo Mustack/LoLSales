@@ -54,3 +54,9 @@ class Skin(Product):
 
 	def __unicode__(self):
 		return self.name
+
+class Sale(models.Model):
+	name = models.CharField(max_length=255)
+	products = models.ManyToManyField(Product, related_name='sales')
+	start = models.DateField()
+	end = models.DateField()
