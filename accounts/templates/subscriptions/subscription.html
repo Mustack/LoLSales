@@ -1,0 +1,12 @@
+{% extends "base_search.html" %}
+{% load staticfiles %}
+{% load less %}
+
+{% block style %}
+{% endblock style %}
+
+{% block content %}{{block.super}}
+
+<h1>Hello {{user.username}}!</h1>
+<h2>Subscriptionssss!!!</h2>
+{% endblock content%}

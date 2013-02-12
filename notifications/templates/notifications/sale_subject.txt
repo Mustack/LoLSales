@@ -1,0 +1,7 @@
+{% if subscriptions|length > 1 %}
+Remember those {{ subscriptions|length }} things you wanted? They're on sale!
+{% elif subscriptions|length == 1 %}
+{% with item=subscriptions|first %}
+{{ item.product.name }} has gone on sale!
+{% endwith %}
+{% endif %}

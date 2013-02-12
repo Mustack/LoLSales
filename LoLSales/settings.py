@@ -107,6 +107,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'LoLSales.urls'
 
+LOGIN_REDIRECT_URL = '/accounts/subscriptions'
+
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'LoLSales.wsgi.application'
 
@@ -137,6 +139,7 @@ INSTALLED_APPS = (
 	'champions',
 	'accounts',
 	'pages',
+	'notifications',
 	# Uncomment the next line to enable admin documentation:
 	# 'django.contrib.admindocs',
 )

@@ -5,10 +5,12 @@
 *~
 
 local_settings.py
-venv
+venv*
 
 .DS_Store
 
 celerybeat-schedule
 
 /static/
+
+LoLSales/static/LESS_CACHE

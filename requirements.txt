@@ -15,8 +15,10 @@ django-registration==0.8
 djrill==0.3.0
 gunicorn==0.14.6
 kombu==2.4.7
-psycopg2==2.4.5
 python-dateutil==1.5
 pytz==2012f
 requests==1.1.0
 wsgiref==0.1.2
+beautifulsoup4==4.1.3
+feedparser==5.1.3
+django-model-utils==1.2.0
