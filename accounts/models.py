@@ -6,6 +6,9 @@ from champions.models import Product
 
 class Subscription(models.Model):
     '''Relates Users to Products that they are interested in'''
+    class Meta:
+        unique_together = (('user', 'product'),)
+
     user = models.ForeignKey(User, related_name='subscriptions')
     product = models.ForeignKey(Product, related_name='subscriptions')
 
