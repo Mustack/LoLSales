@@ -26,4 +26,5 @@ urlpatterns = patterns('',
 
     # API Urls
     url(r'^api/v1/', include('champions.api.urls')),
+    url(r'^api/v1/', include('accounts.api.urls')),
 )
