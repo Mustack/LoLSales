@@ -70,7 +70,7 @@ class Champion(Product):
 class Skin(Product):
 	'''Represents a particular skin for a champion'''
 	product = models.OneToOneField(Product, parent_link=True, db_column='product_ptr_id')
-	champion = models.ForeignKey(Champion)
+	champion = models.ForeignKey(Champion, related_name='skins')
 
 	def __unicode__(self):
 		return self.name
