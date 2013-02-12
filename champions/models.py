@@ -46,6 +46,8 @@ class Product(models.Model):
 			return items[0].sale.end
 		return None
 
+	def __unicode__(self):
+		return self.name
 
 # Create your models here.
 class Champion(Product):
@@ -74,7 +76,14 @@ class Sale(models.Model):
 	start = models.DateField()
 	end = models.DateField()
 
+	def __unicode__(self):
+		return '{} ({}-{})'.format(self.name, self.start.strftime('%b. %d'),
+									self.end.strftime('%b. %d'))
+
 class SaleItem(models.Model):
 	sale = models.ForeignKey(Sale, related_name='sale_items')
 	product = models.ForeignKey(Product, related_name='sale_items')
 	price = models.DecimalField(max_digits=12, decimal_places=2)
+
+	def __unicode__(self):
+		return '{} ({} RP)'.format(self.product.name, self.price)
