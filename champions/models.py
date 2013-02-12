@@ -4,6 +4,7 @@ from model_utils.managers import InheritanceManager
 from datetime import date
 
 class Product(models.Model):
+	'''Generic representation of anything that can go on sale'''
 	objects = InheritanceManager()
 	subscribers = models.ManyToManyField(User, through='accounts.Subscription', related_name='products')
 	name = models.CharField(max_length=255)
@@ -14,11 +15,13 @@ class Product(models.Model):
 
 	@property
 	def active_sale_items(self):
+		'''SaleItems that apply to this product and are active'''
 		today = date.today()
 		return self.sale_items.filter(sale__start__lte=today, sale__end__gte=today).order_by('-price').all()
 
 	@property
 	def active_sales(self):
+		'''Sales that apply to this product and are active'''
 		today = date.today()
 		return self.sales.filter(start__lte=today, end__gte=today).all()
 
@@ -51,6 +54,7 @@ class Product(models.Model):
 
 # Create your models here.
 class Champion(Product):
+	'''Represents a champion from the game'''
 	product = models.OneToOneField(Product, parent_link=True)
 
 	title = models.CharField(max_length=255)
@@ -64,6 +68,7 @@ class Champion(Product):
 		return self.name
 
 class Skin(Product):
+	'''Represents a particular skin for a champion'''
 	product = models.OneToOneField(Product, parent_link=True, db_column='product_ptr_id')
 	champion = models.ForeignKey(Champion)
 
@@ -71,6 +76,7 @@ class Skin(Product):
 		return self.name
 
 class Sale(models.Model):
+	'''A group of price changes with a name and start/end dates'''
 	name = models.CharField(max_length=255)
 	products = models.ManyToManyField(Product, related_name='sales', through='SaleItem')
 	start = models.DateField()
@@ -81,6 +87,9 @@ class Sale(models.Model):
 									self.end.strftime('%b. %d'))
 
 class SaleItem(models.Model):
+	'''
+	Model representing the ManyToMany relation between Sales and Products
+	'''
 	sale = models.ForeignKey(Sale, related_name='sale_items')
 	product = models.ForeignKey(Product, related_name='sale_items')
 	price = models.DecimalField(max_digits=12, decimal_places=2)
