@@ -23,4 +23,7 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('accounts.urls')),
     url(r'^champion/', ChampionView.as_view()),
     url(r'^home/', 'pages.views.home'),
+
+    # API Urls
+    url(r'^api/v1/', include('champions.api.urls')),
 )
