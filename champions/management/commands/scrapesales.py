@@ -4,7 +4,7 @@ import feedparser
 import urllib2
 import re
 from django.core.management.base import BaseCommand
-from champions.models import Champion, Skin
+from champions.models import Champion, Skin, Sale, SaleItem
 from bs4 import BeautifulSoup
 import parsedatetime as pdt
 from datetime import datetime, timedelta
@@ -128,11 +128,25 @@ class Command(BaseCommand):
         urls = [articles[i][2] for i in range(len(articles))]
         print "URLs:\n" + "\n".join(urls)
 
-        sales = []
+        sales = {}
         for url in urls:
-            sales.append(s.extract_sales(url))
+            sales[url] = s.extract_sales(url)
 
         print "Sales:"
-        for dates, items in sales:
+        for url, (dates, items) in sales.iteritems():
+            if not dates or Sale.objects.filter(name=url).exists():
+                continue
+            sale = Sale()
+            sale.start, sale.end = dates
+            sale.name = url
+            sale.save()
             for item in items:
                     print "{:>9}: {:<30} for {:>4} RP ({} - {}) \t {}".format(item['type'], item['item'], item['price'], dates[0], dates[1], item['url'])
+                    sale_item = SaleItem()
+                    sale_item.sale = sale
+                    if item['type'] == 'champion':
+                        sale_item.product = Champion.objects.get(name=item['item'])
+                    elif item['type'] == 'skin':
+                        sale_item.product = Skin.objects.get(name=item['item'])
+                    sale_item.price = int(item['price'])
+                    sale_item.save()
