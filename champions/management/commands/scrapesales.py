@@ -6,7 +6,30 @@ import re
 from django.core.management.base import BaseCommand
 from champions.models import Champion, Skin
 from bs4 import BeautifulSoup
+import parsedatetime as pdt
+from datetime import datetime, timedelta
 
+# http://stackoverflow.com/a/5903760
+def to_datetime( result, what ):
+    dt = None
+
+    # what was returned (see http://code-bear.com/code/parsedatetime/docs/)
+    # 0 = failed to parse
+    # 1 = date (with current time, as a struct_time)
+    # 2 = time (with current date, as a struct_time)
+    # 3 = datetime
+    if what in (1,2):
+        # result is struct_time
+        dt = datetime( *result[:6] )
+    elif what == 3:
+        # result is a datetime
+        dt = result
+
+    if dt is None:
+        # Failed to parse
+        raise ValueError, ("Don't understand date")
+
+    return dt
 
 class SaleFinder(object):
     def __init__(self, skins, champions):
@@ -16,6 +39,7 @@ class SaleFinder(object):
         self.skins = skins
         self.champions = champions
         self.price_regex = re.compile('(\d+)\s+RP', re.MULTILINE)
+        self.date_regex = re.compile(r'^[ \t]*[a-zA-Z]+( )+([1-9][0-9]?)[ \t]*$')
 
     def get_articles(self, url):
         """Returns a list of tuples in the form of (published, title, link)
@@ -23,14 +47,41 @@ class SaleFinder(object):
         d = feedparser.parse(url)
         return [(e['published_parsed'], e['title'], e['link']) for e in d['entries']]
 
+    def _extract_date(self, detail, body):
+        posted_date = datetime.strptime(detail.find('span', attrs='date').text, '%a, %Y-%m-%d %H:%M')
+        constants = pdt.Constants()
+        constants.Year = posted_date.year
+
+        # Wrap the year around if the date is past december
+        if posted_date.month == 12:
+            constants.Year = (posted_date + timedelta(years=1)).year
+
+        constants.YearParseStyle = 0
+        calendar = pdt.Calendar(constants)
+
+        comment_link = body.find(text='Click here to comment')
+
+        dates = []
+        for x in comment_link.find_parent('p').find_all_previous('b', text=self.date_regex, limit=2):
+            x = calendar.parse(x.text)
+            x = to_datetime(*x)
+            x = x.date()
+            dates.append(x)
+        dates.sort()
+        return dates
+
     def extract_sales(self, url):
         """Extracts the new price of skins and champions"""
+        if 'champion-skin-sale' not in url:
+            return ([], [])
         opener = urllib2.build_opener()
         url_opener = opener.open(url)
         page = url_opener.read()
-        soup = BeautifulSoup(page)
+        s = BeautifulSoup(page)
 
-        soup = soup(attrs='article_body')[0]
+        soup = s(attrs='article_body')[0]
+        detail = s(attrs='article_detail')[0]
+        dates = self._extract_date(detail, soup)
         list_items = [li.text for li in soup.find_all('li')]
 
         sales = []
@@ -58,7 +109,7 @@ class SaleFinder(object):
                     sale['url'] = url
                     sales.append(sale)
 
-        return sales
+        return (dates, sales)
 
 
 class Command(BaseCommand):
@@ -79,8 +130,9 @@ class Command(BaseCommand):
 
         sales = []
         for url in urls:
-            sales.extend(s.extract_sales(url))
+            sales.append(s.extract_sales(url))
 
         print "Sales:"
-        for sale in sales:
-            print "{:>9}: {:<30} for {:>4} RP \t {}".format(sale['type'], sale['item'], sale['price'], sale['url'])
+        for dates, items in sales:
+            for item in items:
+                    print "{:>9}: {:<30} for {:>4} RP ({} - {}) \t {}".format(item['type'], item['item'], item['price'], dates[0], dates[1], item['url'])
