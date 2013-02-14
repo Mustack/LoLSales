@@ -2,12 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 from model_utils.managers import InheritanceManager
 from datetime import date
+from django.db.models.signals import pre_save
+from django.template.defaultfilters import slugify
+
+from django.core import urlresolvers
 
 class Product(models.Model):
 	'''Generic representation of anything that can go on sale'''
 	objects = InheritanceManager()
 	subscribers = models.ManyToManyField(User, through='accounts.Subscription', related_name='products')
 	name = models.CharField(max_length=255)
+	slug = models.SlugField(blank=True, unique=True)
 
 	def classname(self):
 		'''Returns the name of this class for use in templates'''
@@ -51,6 +56,10 @@ class Product(models.Model):
 
 	def __unicode__(self):
 		return self.name
+
+	def get_absolute_url(self):
+		return urlresolvers.reverse('champions_product',
+			args=(self.slug,))
 
 # Create your models here.
 class Champion(Product):
@@ -96,3 +105,10 @@ class SaleItem(models.Model):
 
 	def __unicode__(self):
 		return '{} ({} RP)'.format(self.product.name, self.price)
+
+def _slugify_name(sender, instance, raw, using, **kwargs):
+	instance.slug = slugify(instance.name)
+
+pre_save.connect(_slugify_name, Product)
+pre_save.connect(_slugify_name, Skin)
+pre_save.connect(_slugify_name, Champion)
