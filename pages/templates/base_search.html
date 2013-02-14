@@ -1,15 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form id="search-bar" style="text-align: center">
-	<span>
-		<input type="text"/>
-		<input type="submit"/>
-	</span>
-</form>
-
+<div class="search-bar">
+	<form method="GET" class="form-search" action="{% url champions_search %}">
+		{% for field in search_form %}
+			{{ field }}
+		{% endfor %}
+		<button type="submit" class="btn">Search</button>
+	</form>
+</div>
 
 {% block champion %}
 {% endblock champion %}
 
 {% endblock content %}
+
+{% block scripts %}
+	{{ block.super }}
+	{% include 'autocomplete_light/static.html' %}
+	<script type="text/javascript">
+		$('#id_product').change(function (e) {
+			var $form = $(e.target).closest('form');
+			$form.submit();
+		});
+	</script>
+{% endblock %}

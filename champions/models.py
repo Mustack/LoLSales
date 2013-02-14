@@ -76,6 +76,10 @@ class Champion(Product):
 	def __unicode__(self):
 		return self.name
 
+	def get_absolute_url(self):
+		return urlresolvers.reverse('champions_champion',
+			args=(self.slug,))
+
 class Skin(Product):
 	'''Represents a particular skin for a champion'''
 	product = models.OneToOneField(Product, parent_link=True, db_column='product_ptr_id')
@@ -83,6 +87,10 @@ class Skin(Product):
 
 	def __unicode__(self):
 		return self.name
+
+	def get_absolute_url(self):
+		return urlresolvers.reverse('champions_skin',
+			args=(self.slug,))
 
 class Sale(models.Model):
 	'''A group of price changes with a name and start/end dates'''
@@ -94,6 +102,7 @@ class Sale(models.Model):
 	def __unicode__(self):
 		return '{} ({}-{})'.format(self.name, self.start.strftime('%b. %d'),
 									self.end.strftime('%b. %d'))
+
 
 class SaleItem(models.Model):
 	'''
