@@ -5,7 +5,7 @@ import urllib2
 import re
 from django.core.management.base import BaseCommand
 from champions.models import Champion, Skin, Sale, SaleItem
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 import parsedatetime as pdt
 from datetime import datetime, timedelta
 
@@ -40,6 +40,7 @@ class SaleFinder(object):
         self.champions = champions
         self.price_regex = re.compile('(\d+)\s+RP', re.MULTILINE)
         self.date_regex = re.compile(r'^[ \t]*[a-zA-Z]+( )+([1-9][0-9]?)[ \t]*$')
+        self.name_regex = re.compile(r'[^a-zA-z0-9 ]+')
 
     def get_articles(self, url):
         """Returns a list of tuples in the form of (published, title, link)
@@ -62,8 +63,10 @@ class SaleFinder(object):
         comment_link = body.find(text='Click here to comment')
 
         dates = []
-        for x in comment_link.find_parent('p').find_all_previous('b', text=self.date_regex, limit=2):
-            x = calendar.parse(x.text)
+        for x in comment_link.find_parent('p').find_all_previous(text=self.date_regex, limit=2):
+            if isinstance(x, Tag):
+                x = x.text
+            x = calendar.parse(x)
             x = to_datetime(*x)
             x = x.date()
             dates.append(x)
@@ -86,16 +89,20 @@ class SaleFinder(object):
 
         sales = []
         for li in list_items:
+            li = self.name_regex.sub('', li)
             sale = {}
 
             # look for champion names
             for champion in self.champions:
-                if champion in li:
+                champion_s = self.name_regex.sub('', champion)
+                if champion_s in li:
                     # see if it's a skin sale, not a champion sale.
                     for skin in self.skins:
-                        if skin.replace(champion, '').strip() in li:
+                        skin_s = self.name_regex.sub('', skin)
+                        if skin_s.replace(champion_s, '').strip() in li:
                             sale['item'] = skin
                             sale['type'] = "skin"
+
                     # if no skin name was found, it is a champion sale
                     if 'item' not in sale:
                         sale['item'] = champion
@@ -108,7 +115,6 @@ class SaleFinder(object):
                     sale['price'] = price_regex_result.group(1)
                     sale['url'] = url
                     sales.append(sale)
-
         return (dates, sales)
 
 
