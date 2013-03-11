@@ -32,4 +32,7 @@ urlpatterns = patterns('',
 
     # Champions search, skins and champions
     url(r'^', include('champions.urls')),
+
+    #This is to enable Fresh
+    url(r'', include('fresh.urls')),
 )
