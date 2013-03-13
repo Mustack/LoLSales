@@ -1,10 +1,13 @@
 {% extends "base_search.html" %}
 {% load staticfiles %}
-{% load less %}
+{% load compress %}
 
 {% block style %}
 	{{ block.super }}
-	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}{% less 'css/champion.less' %}">
+
+	{% compress css %}
+		<link rel="stylesheet" type="text/less" href="{% static 'css/champion.less' %}" media="all">
+	{% endcompress %}
 {% endblock style %}
 
 {% block scripts %}
@@ -13,20 +16,44 @@
 {% endblock scripts %}
 
 {% block champion %}
-<section class="champion-content">
-	<article id="champion">
-		<h1>Maokai</h1>
+<section class="champion">
+	<h1>{{ champion.name }}</h1>
 
-		<img class="champ-picture" src="{% static 'images/maokai-large.jpg' %}">
+	<img class="left champion-image" src="{{ champion.image_url }}">
 
-		<p class="description">The twisting magical energies unleashed by mages during the Rune Wars caused an incredible amount of devastation to the natural world. The League was established to control the use of this magic by confining it to the Fields of Justice. By limiting its use to there, they thought that they could prevent it from doing further harm to the environment. It seemed that they were successful until Maokai came into being. During a League match on The Twisted Treeline, Maokai, an ancient oak that stood above the upper jungle, spontaneously roared to life. Ripped from the natural balance by arcane forces, his sentience was forged in chaos. Before the Adjudicators of the League could step in and suppress him, he slew all six champions participating in the match. The scholars of the Arcanum Majoris took a keen interest in him, as they were eager to discover the secrets of his animation.</p>
+	<p class="description">{{ champion.short_description }}</p>
 
-		<section class="right">
-			<h2>Notify Me</h2>
-			<div id="mySwitch" class="switch switch-large">
+	<div class="right">
+		<h2>Notify For</h2>
+		<div class="switch-label">Champion Sale</div>
+		<div id="champion-switch" class="switch switch-large">
+		    <input type="checkbox" checked="checked">
+		</div>
+
+		<div class="switch-label">Skin Sale (Any)</div>
+		<div id="skin-switch" class="switch switch-large">
+		    <input type="checkbox" checked="checked">
+		</div>
+	</div>
+</section>
+
+<section class="skins">
+	<h1>{{ champion.name }} Skins</h1>
+	
+	{% for skin in champion.skins.all %}
+	<article class="skin">
+		<img class="left" src="{% static 'images/thumb-Ahri.jpg' %}">
+		
+		<h2 class="skin-name">{{ skin.name }}</h2>
+
+		<div class="right">
+			<div class="switch-label">Notify Me</div>
+			<div id="{{ skin.id }}" class="switch switch-large skin-switch">
 			    <input type="checkbox" checked="checked">
 			</div>
-		</section>
+		</div>
 	</article>
+	{% endfor %}
+	
 </section>
 {% endblock champion %}
