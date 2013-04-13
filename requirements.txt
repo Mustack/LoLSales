@@ -17,7 +17,6 @@ django-celery==3.0.11
 django-compressor==1.2
 django-crispy-forms==1.2.3
 django-extensions==0.9
-django-fresh==1.0.4
 django-model-utils==1.2.0
 django-registration==0.8
 django-tastypie==0.9.14

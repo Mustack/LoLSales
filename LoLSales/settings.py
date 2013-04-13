@@ -104,7 +104,6 @@ MIDDLEWARE_CLASSES = (
 	'django.contrib.messages.middleware.MessageMiddleware',
 	# Uncomment the next line for simple clickjacking protection:
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-	'fresh.middleware.FreshMiddleware',
 )
 
 ROOT_URLCONF = 'LoLSales.urls'
@@ -155,7 +154,6 @@ INSTALLED_APPS = (
 	'notifications',
 	'tastypie',
 	'autocomplete_light',
-	'fresh',
 	# Uncomment the next line to enable admin documentation:
 	# 'django.contrib.admindocs',
 )
