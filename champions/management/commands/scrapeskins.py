@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand, CommandError
 import urllib2
 import urlparse
 from bs4 import BeautifulSoup
-from bs4.element import Tag
+from bs4.element import Tag, NavigableString
 from champions.models import Champion, Skin
 import re
 
@@ -12,67 +12,56 @@ import re
 # This scraper uses the league of legends wika, so it may not be constantly up to date
 
 class SkinScraper(object):
-    RE_SKIN = re.compile('Skin Name')
-
     def skins(self, url):
         opener = urllib2.build_opener()
         url_opener = opener.open(url)
         soup = BeautifulSoup(url_opener)
 
-        # Find table header cells that fit skin tables
-        table_headers = soup('th', text=self.RE_SKIN)
+        # Find root element for every skin
+        skins = soup.findAll('div', {'class' : 'thumbinner'})
 
-        # Find the tables that hold the header cells
-        skin_tables = [x.find_parent('table') for x in table_headers]
 
-        for skin_table in skin_tables:
-            for skin_row in skin_table('tr'):
-                data = [x for x in skin_row.contents if isinstance(x, Tag)]
+        for skin in skins:
+            if skin.div.b.a: #checks for the Riot Points logo because then we know the skin is actually in the store
+                skin_name = skin.div.b.i.contents[0]
+                skin_url = BASE_URL + skin.find('img', {'class' : 'thumbimage'})['src']
 
-                if len(data) < 1:
-                    continue
+                #Some skins have this random space that throws off the index of the proper string in contents
+                #cost_string = skin.div.b.contents[1] if type(skin.div.b.contents[1]) == NavigableString else skin.div.b.contents[2]
+                #skin_cost = int(cost_string.replace('-','').replace(',','').strip())
 
-                c_name = data[0].find('b')
+                skin_cost = int(skin.div.b.text.split(' - ')[1].replace('-','').replace(',','').strip())
 
-                if not c_name:
-                    continue
+                yield skin_name, skin_url, skin_cost
 
-                c_name = c_name.find('a')
-
-                if not c_name:
-                    continue
-
-                if c_name:
-                    champion = c_name['title'].split('/', 1)[0]
-                    yield champion, c_name.text
-
-SKIN_URL = 'http://leagueoflegends.wikia.com/wiki/Champion_skin'
+BASE_URL = 'http://leaguepedia.com'
 
 class Command(BaseCommand):
     help = 'Scrape skins and update the database'
 
     def __init__(self):
         self.scraper = SkinScraper()
-        self.champions = dict((x.name, x) for x in Champion.objects.all())
 
     def handle(self, *args, **options):
-        for c_name, s_name in self.scraper.skins(SKIN_URL):
-            skin = Skin()
-            skin.name = s_name
+        for champion in Champion.objects.all():
+            name = champion.name.replace(' ', '_')
+            URL = BASE_URL + '/wiki/' + name
 
+            print "Scraping Skins For:   "+ champion.name
 
-            s_name = s_name.lower()
-            c_name = c_name.lower()
+            #Special cases
+            if champion.name == 'Dr. Mundo':
+                URL = 'http://leaguepedia.com/wiki/Dr._Mundo_-_The_Madman_of_Zaun'
+            elif champion.name == 'Master Yi':
+                URL = 'http://leaguepedia.com/wiki/Master_Yi_-_The_Wuju_Bladesman'
 
-            for name, champion in self.champions.iteritems():
-                if name.lower() in c_name or name.lower() in s_name:
-                    skin.champion = champion
-                    break
+            for skin_name, skin_url, skin_cost in self.scraper.skins(URL):
+                skin = Skin()
 
-            try:
-                _ = skin.champion
-            except Champion.DoesNotExist:
-                print s_name
-                exit()
+                skin.champion = champion
+                skin.name = skin_name
+                skin.icon_url = skin_url
+                skin.cost = skin_cost
 
-            skin.save()
+                skin.save()
+

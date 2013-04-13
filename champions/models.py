@@ -84,6 +84,8 @@ class Skin(Product):
 	'''Represents a particular skin for a champion'''
 	product = models.OneToOneField(Product, parent_link=True, db_column='product_ptr_id')
 	champion = models.ForeignKey(Champion, related_name='skins')
+	icon_url = models.URLField(max_length=1024, default='http://leaguepedia.com/images/thumb/0/0d/Teemo_Splash_6.jpg/250px-Teemo_Splash_6.jpg')
+	cost = models.IntegerField(default=-1)
 
 	def __unicode__(self):
 		return self.name
